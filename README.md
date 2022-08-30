@@ -1,58 +1,28 @@
 # MooN-matching
 Date: 30.08.2022
 
-This repository contains the R code to implement the direct M-out-of-N bootstrap for nearest neighbor matching alonf with the simulation study in:
+This repository contains the R code to implement the direct M-out-of-N bootstrap for nearest neighbor matching along with the code used in the simulation study in:
 
-Walsh, C.P. and Jentsch, M. (2022+), "Nearest neighbor matching: Does direct M-out-of-N bootstrapping without bias correction work when the naive bootstrap fails"
-
-
-* the data in the folder **Data/**
-* the main estimation code in the file **Main_Estimation_Code.r** to estimate the model components  
-* additional code to reproduce the figures and the table from the application section of the paper is in the file **Extra_Code_Plots.r**
-* auxiliary commented functions in the folder **AuxiliaryCode/**
-
-### Data 
-
-The data in the folder **Data/Data_Application.csv** consists of the following:
-
-* The first column (*Date*) contains the date 
-* The second column (*SP500*) contains the S&P 500 log returns
-* The third column (*T10yAaa.lag*) contains the lagged yield difference between 10 year treasuries and Aaa bonds
-* The fourth column (*Aaa.Baa.lag*) contains the lagged yield difference between Aaa bonds and Baa bonds
-* The fifth column (*T10yT1y.lag*) contains the lagged yield difference between 10 year and 1 year treasuries
-
-The raw data used to calculate the S&P 500 log returns were taken from Yahoo!Finance (https://finance.yahoo.com). The raw data used to calculate the lagged yield differences were taken from the FRED database of the Federal Reserve bank of St.Louis (https://fred.stlouisfed.org/).
+Walsh, C.P. and Jentsch, C. (2022+), "Nearest neighbor matching: Does direct M-out-of-N bootstrapping without bias correction work when the naive bootstrap fails"
 
 
-## Preliminary steps BEFORE running the code
+This repository contains:
 
-1. In order to run the C code one needs to build a shared library 
-which is then dynamically loaded:
-+ To create the dynamic library: Start R; go to 
-the **AuxiliaryCode/** folder and run `R CMD SHLIB sbfnw.c`.
-+ The dynamic library is loaded on line 43 of 
-**AuxiliaryCode/estimation.r**, which reads 
-`dyn.load("AuxiliaryCode/sbfnw.so","sbfnw") ` 
-For windows users this line will need adjusting to 
-`dyn.load("AuxiliaryCode/sbfnw.dll","sbfnw")`. 
-
-2. The estimation of the GARCH parameters is done with the *fGarch* package, so this will need to be installed, which currently requires R version 4.0.0 or above.
+* R code in the file **moon_matching.r** to implement our M-out-of-N bootstrap. Further details are given in the file.
+* R code in the file **simulation_function.r** to do one simulation run for a fixed ratio of treated to control units over various sample sizes and bootstrap resample sizes. Further details are given in the file.   
+* R code used in the simulation study of the paper for the ratio of treated to control given by *alpha = 0.2, 1, 2.84* and *5* is in the files **main_file_alpha_02.r**, **main_file_alpha_1.r**, **main_file_alpha_bar.r**, **main_file_alpha_5.r** respectively. 
+* the estimation results from the simulation study are contained in the folder **Results/** in the files **ATET_MooN_alpha_0.2.RData**, **ATET_MooN_alpha_1.RData**, **ATET_MooN_alpha_2.84.RData** and **ATET_MooN_alpha_5.RData**  
+* the folder **Results/** also contains the file **summarize_results_paper.r** to construct:
+   * **paper_plot_point_estimates.pdf**, which corresponds to Figrue 1 of the paper  
+   * and **Coverage_Table.tex**, which gives the coverage probabilities in Table 1 of the paper.   
 
 
-## More on the code
+ACKNOWLEDGEMENTS: The simulations were run on the supercomputer CLAIX at RWTH Aachen University as part of the NHR4CES infrastructure with computing resources under the project p0020105.
 
-Once all the above preliminary preparations have been done then, the code can be run:
+CAUTION: The simulations in the files **main_file_alpha_02.r**, **main_file_alpha_1.r**, **main_file_alpha_bar.r**, **main_file_alpha_5.r** were run on 48 cores with run times in hours of 07:43:36, 14:00:32,  10:59:47 and 07:56:22 respectively.   
 
-1. The data is loaded and the estimates are calculated when running 
-**Main_Estimation_Code.r**. The code has been split into seperate steps with comments as to 
-what each step does. The code for the corresponding functions are
-all in the **AuxiliaryCode/** folder.  
 
-2. Additional code to get (pointwise) confidence intervals and 
-construct figures and table as in paper is provided in 
-**Extra_Code_Plots.r**. 
-(The code requires estimation of the model first as
-mentioned in Step 0.) 
-The code is then split into individual steps needed to 
-reproduce the figures and the table from the paper again the 
-functions used are in **AuxiliaryCode/** folder. 
+
+
+
+
